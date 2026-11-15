@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173d35">
+  <title>EverAfter — Wedding Venue Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="EverAfter home"><span class="brand-mark">e</span><span>everafter<span class="brand-dot">.</span></span></a>
+    <nav><a href="#venues">Venues</a><a href="#how-it-works">How it works</a><a href="#business-rules">Business rules</a><a href="#cancel-booking">Cancel booking</a><a href="/admin.html">Operations</a><a href="#booking" class="nav-cta">Plan your event <span>↗</span></a></nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <p class="eyebrow light"><span></span> YOUR DAY, YOUR WAY</p>
+        <h1>Make room for<br><em>forever.</em></h1>
+        <p class="hero-copy">Find the place where your next chapter begins. Beautiful venues, thoughtful details, and one less thing to worry about.</p>
+        <a class="button button-light" href="#booking">Find your venue <span>↓</span></a>
+      </div>
+      <div class="hero-note"><span class="note-line"></span><span>Thoughtfully planned.<br>Beautifully remembered.</span></div>
+      <div class="hero-index"><strong>01</strong><span> / 03</span></div>
+    </section>
+
+    <section class="intro section-wrap" id="venues">
+      <div class="section-heading">
+        <div><p class="eyebrow"><span></span> THE SETTING MATTERS</p><h2>A place that feels<br><em>like your story.</em></h2></div>
+        <p class="section-side-copy">From intimate celebrations to grand gatherings, find a venue that makes every moment feel like yours.</p>
+      </div>
+      <div class="venue-grid" id="venue-grid"><div class="loading-card">Finding your venues…</div></div>
+    </section>
+
+    <section class="booking-section" id="booking">
+      <div class="booking-intro">
+        <p class="eyebrow light"><span></span> START WITH A DATE</p>
+        <h2>Let's make it<br><em>official.</em></h2>
+        <p>Tell us a little about your celebration. We'll bring the venue and package details together with a transparent estimate.</p>
+        <div class="trust-list"><div><span>01</span> Choose your setting</div><div><span>02</span> Build your package</div><div><span>03</span> Review and reserve</div></div>
+      </div>
+      <div class="booking-card">
+        <div class="card-topline"><div><p class="eyebrow">YOUR CELEBRATION</p><h3>Booking details</h3></div><span class="step-chip">STEP 01 / 03</span></div>
+        <form id="booking-form">
+          <div class="field"><label for="client">Your name</label><input id="client" name="client" placeholder="e.g. Ananya Rao" required maxlength="80"></div>
+          <div class="field"><label for="venueId">Choose a venue</label><select id="venueId" name="venueId" required><option value="">Loading venues…</option></select><small id="venue-hint">Select a venue to see its capacity and pricing.</small></div>
+          <div class="field-row">
+            <div class="field"><label for="date">Event date</label><input type="date" id="date" name="date" required></div>
+            <div class="field"><label for="slot">Time slot</label><select id="slot" name="slot"><option value="DAY">Day</option><option value="NIGHT">Night</option><option value="DAY_AND_NIGHT">Day + night</option></select></div>
+          </div>
+          <div class="field"><label for="guests">Expected guests</label><div class="guest-input"><input type="number" id="guests" name="guests" min="1" value="150" required><span>guests</span></div></div>
+          <div class="form-divider"></div>
+          <div class="package-heading"><div><p class="eyebrow">THE LITTLE DETAILS</p><h3>Choose your vendors</h3></div><span class="optional">Optional</span></div>
+          <div id="package-fields" class="package-fields"><p class="muted">Loading packages…</p></div>
+          <button type="button" class="button button-outline full" id="quote-button">Calculate my estimate <span>↗</span></button>
+          <div class="quote-box" id="quote-box" hidden aria-live="polite"></div>
+          <button type="submit" class="button button-dark full" id="book-button">Reserve this date <span>→</span></button>
+          <p class="fine-print">A date hold lasts 72 hours. A booking is confirmed only after the required first advance is recorded; this demo simulates payment and stores booking holds locally.</p>
+        </form>
+        <div id="notice" class="notice" role="status" hidden></div>
+      </div>
+    </section>
+
+    <section class="booking-section" id="cancel-booking">
+      <div class="booking-intro">
+        <p class="eyebrow light"><span></span> BOOKING SUPPORT</p>
+        <h2>Need to cancel?<br><em>See the numbers first.</em></h2>
+        <p>Enter your booking ID to calculate the applicable forfeiture and any refund eligibility under the cancellation rules.</p>
+        <div class="trust-list"><div><span>01</span> Ladder and vendor terms applied</div><div><span>02</span> Forfeiture cap checked</div><div><span>03</span> No bank transfer is made by this demo</div></div>
+      </div>
+      <div class="booking-card">
+        <div class="card-topline"><div><p class="eyebrow">CANCELLATION REQUEST</p><h3>Review cancellation</h3></div><span class="step-chip">REFUND ESTIMATE</span></div>
+        <form id="customer-cancel-form">
+          <div class="field"><label for="customer-cancel-id">Booking ID</label><input id="customer-cancel-id" name="bookingId" placeholder="e.g. WEB-B102" required></div>
+          <div class="field"><label for="customer-cancel-date">Cancellation date</label><input id="customer-cancel-date" name="cancelDate" type="date" required></div>
+          <button type="submit" class="button button-dark full" id="customer-cancel-button">Calculate and cancel booking</button>
+          <p class="fine-print">A displayed refund is pending eligibility only. No refund is transferred from this demo.</p>
+        </form>
+        <div id="customer-cancel-result" class="quote-box" hidden aria-live="polite"></div>
+        <div id="customer-cancel-notice" class="notice" role="status" hidden></div>
+      </div>
+    </section>
+
+    <section class="how section-wrap" id="how-it-works">
+      <p class="eyebrow"><span></span> SIMPLE BY DESIGN</p><h2>Less juggling.<br><em>More celebrating.</em></h2>
+      <div class="how-grid"><article><span class="how-num">01</span><h3>Find your place</h3><p>Compare venue capacity and starting rates, then choose the date and slot that suit your plans.</p></article><article><span class="how-num">02</span><h3>Make it yours</h3><p>Add catering, decor, or photography packages to see a clear estimate before reserving.</p></article><article><span class="how-num">03</span><h3>Know the numbers</h3><p>Review venue charges, vendor packages, and the applicable taxes in one place.</p></article></div>
+    </section>
+
+    <section class="rules-section section-wrap" id="business-rules">
+      <div class="section-heading">
+        <div><p class="eyebrow"><span></span> HOW THE BOOKING ENGINE WORKS</p><h2>12 business<br><em>rules, in plain language.</em></h2></div>
+        <p class="section-side-copy">These summarize the rules in the supplied PS-108 design document and the current demo behavior. Some financial details still need organizer confirmation.</p>
+      </div>
+      <div class="rules-note"><strong>Cancellation refund notice</strong><span>Refund eligibility is calculated as amounts paid minus capped forfeiture, never below zero. Any amount due above what was paid is shown separately, up to the BR-07 cap. This demo does not transfer money.</span></div>
+      <div class="rules-grid">
+        <article class="rule-card"><span class="rule-number">BR-01</span><h3>Holds and queues</h3><p>An available date and slot can be held for 72 hours. Expired holds release the slot; queued enquiries are handled in order. Confirmation requires the matching active hold, and the first advance clears the overlapping queue.</p></article>
+        <article class="rule-card"><span class="rule-number">BR-02</span><h3>Venue pricing</h3><p>The demo uses the higher applicable seasonal multiplier: 1.3× for weekends and 1.6× for auspicious dates. A day-and-night booking gets 10% off the second slot.</p></article>
+        <article class="rule-card"><span class="rule-number">BR-03</span><h3>Catering</h3><p>The minimum billed quantity is the higher of 80% of quoted guests (rounded up) or 150 plates. Plates up to 10% above the quote use the standard rate; additional plates use 1.2×.</p></article>
+        <article class="rule-card"><span class="rule-number">BR-04</span><h3>Package swaps</h3><p>Swaps are free when 30 or more days remain. Inside 30 days, the demo adds a fee of 10% of the higher old or new package price.</p></article>
+        <article class="rule-card"><span class="rule-number">BR-05</span><h3>Advance schedule</h3><p>More than 60 days out: 25% at confirmation, 50% at 60 days, and the balance at 7 days. At 8–60 days: 75% at confirmation and 25% at 7 days. At 7 days or fewer: full payment at confirmation.</p></article>
+        <article class="rule-card"><span class="rule-number">BR-06</span><h3>Late payments</h3><p>The implementation applies a 5-day grace period, then 1% for each started overdue week. An outstanding advance at 21 days overdue triggers automatic cancellation in the demo.</p></article>
+        <article class="rule-card"><span class="rule-number">BR-07</span><h3>Cancellation ladder</h3><p>General forfeiture is 10% more than 180 days out, 25% at 91–180 days, 50% at 31–90, 75% at 8–30, and 100% within 7 days. The total cap is advances paid plus ₹25,000.</p></article>
+        <article class="rule-card"><span class="rule-number">BR-08</span><h3>Vendor cancellation terms</h3><p>Photography forfeiture is 100% within 30 days. Catering forfeiture within 7 days is based on the catering guarantee. The general cap still applies to the combined amount.</p></article>
+        <article class="rule-card"><span class="rule-number">BR-09</span><h3>Date changes</h3><p>One free date change is allowed when the original event is more than 90 days away and the replacement date is within 180 days of the request. Otherwise, the demo calculates cancellation forfeiture and a 50% rebooking credit, which must be applied manually to a separate booking.</p></article>
+        <article class="rule-card"><span class="rule-number">BR-10</span><h3>Final settlement</h3><p>The bill brings together venue, catering actuals, packages, switch fees, rate-card damages, GST, and advances; tips are excluded. GST is 18% on venue and packages, and 5% on catering without input tax credit. Damages are outside those stated GST bases.</p></article>
+        <article class="rule-card"><span class="rule-number">BR-11</span><h3>Commissions and payouts</h3><p>Configured commissions are 12% for venues, 8% for catering, and 15% for décor and photography. Payouts become eligible 7 days after event close; a matching open dispute filed within 48 hours freezes the payout.</p></article>
+        <article class="rule-card"><span class="rule-number">BR-12</span><h3>Rule precedence</h3><p>Vendor-specific cancellation terms are calculated first, the general ladder applies to remaining contract value, then the ₹25,000 cap is applied once to the combined forfeiture.</p></article>
+      </div>
+      <p class="rules-footnote">This is a local demo: booking holds, enquiry queues and booking states persist in a local SQLite database. Payments are simulated, and no cash refund is processed. Ask the organizer to confirm unresolved policies before treating estimates as final terms.</p>
+    </section>
+  </main>
+
+  <footer><a class="brand footer-brand" href="#home"><span class="brand-mark">e</span><span>everafter<span class="brand-dot">.</span></span></a><p>Made for the moments that matter.</p><span class="footer-tag">PS-108 · JAVA BOOKING ENGINE DEMO</span></footer>
+  <script src="/app.js"></script>
+</body>
+</html>

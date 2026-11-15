@@ -1,0 +1,3 @@
+
+vendor_id,name,category,packages,commission_rate
+CAT-001,Premium Catering,CATERING,SILVER:900;GOLD:1400;PLATINUM:2000,0.08

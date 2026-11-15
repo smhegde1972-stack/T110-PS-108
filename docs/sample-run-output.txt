@@ -1,0 +1,58 @@
+QUOTE venue=V001 date=2026-12-06 slot=DAY guests=180 seasonMultiplier=1.6
+  venue=Rs 240000.00
+  catering=Rs 252000.00
+  package Petal Decor=Rs 85000.00
+  package FrameStory Photography=Rs 60000.00
+  GST18 venue+packages=Rs 69300.00
+  GST5 catering=Rs 12600.00
+  total=Rs 718900.00
+ENQUIRY E001 accepted; hold/queue state updated
+2026-10-20T10:01 HOLD request observed for E001 (ENQUIRE creates the temporary hold)
+CONFIRMED B001 | venue=Rs 240000.00
+ADVANCE_SCHEDULE B001
+  MERGED_75_PERCENT due=2026-10-20 amount=Rs 539175.00
+  BALANCE_25_PERCENT due=2026-11-29 amount=Rs 179725.00
+PAYMENT B001 Rs 539175.00
+PAYMENT B001 Rs 179725.00
+ACTUALS B001 guests=190 damages=Rs 8000.00
+  DAMAGE CHAIR quantity=2 amount=Rs 3000.00
+  DAMAGE TABLE quantity=1 amount=Rs 5000.00
+SETTLEMENT B001 venue=Rs 240000.00 catering=Rs 266000.00 packages=Rs 145000.00 switchFees=Rs 0.00 damages=Rs 8000.00 GST18=Rs 69300.00 GST5=Rs 13300.00 advances=Rs 718900.00 dateChangeCredit=Rs 0.00 lateFeesSeparate=Rs 0.00 balance=Rs 22700.00
+DISPUTE DP001 vendor=D001 payoutFreeze=true
+PAYOUT B001 vendor=D001 gross=Rs 85000.00 commission=Rs 12750.00 net=Rs 72250.00 status=FROZEN_DISPUTE
+DISPUTE_RESOLVED DP001
+PAYOUT B001 vendor=D001 gross=Rs 85000.00 commission=Rs 12750.00 net=Rs 72250.00 status=PAYABLE
+PAYOUT B001 venue=V001 gross=Rs 240000.00 commission=Rs 28800.00 net=Rs 211200.00 status=PAYABLE
+ENQUIRY E002 accepted; hold/queue state updated
+CONFIRMED B002 | venue=Rs 195000.00
+ADVANCE_SCHEDULE B002
+  CONFIRMATION_25_PERCENT due=2026-12-15 amount=Rs 228900.00
+  T_MINUS_60_50_PERCENT due=2027-03-02 amount=Rs 457800.00
+  T_MINUS_7_BALANCE due=2027-04-24 amount=Rs 228900.00
+PAYMENT B002 Rs 228900.00
+ENQUIRY E003 accepted; hold/queue state updated
+CONFIRMED B003 | venue=Rs 325000.00
+ADVANCE_SCHEDULE B003
+  CONFIRMATION_25_PERCENT due=2027-01-01 amount=Rs 212825.00
+  T_MINUS_60_50_PERCENT due=2027-02-09 amount=Rs 425650.00
+  T_MINUS_7_BALANCE due=2027-04-03 amount=Rs 212825.00
+DATE_CHANGE_REBOOK_REQUIRED B003 forfeiture=Rs 25000.00 newBookingCredit=Rs 12500.00; create a separate enquiry/booking for 2027-07-01
+PAYMENT B002 Rs 457800.00
+SWAP B002 fee=Rs 0.00
+CANCELLATION B002 daysBeforeEvent=29
+  C001 forfeiture=Rs 300000.00
+  D001 forfeiture=Rs 63750.00
+  P001 forfeiture=Rs 95000.00
+  VENUE_AND_OTHER forfeiture=Rs 211875.00
+  gross=Rs 670625.00 cap=Rs 711700.00 finalForfeiture=Rs 670625.00
+ENQUIRY E004 accepted; hold/queue state updated
+CONFIRMED B004 | venue=Rs 250000.00
+ADVANCE_SCHEDULE B004
+  CONFIRMATION_25_PERCENT due=2027-04-02 amount=Rs 190700.00
+  T_MINUS_60_50_PERCENT due=2027-05-02 amount=Rs 381400.00
+  T_MINUS_7_BALANCE due=2027-06-24 amount=Rs 190700.00
+ADVANCE_SCHEDULE B004
+  CONFIRMATION_25_PERCENT due=2027-04-02 amount=Rs 187575.00
+  T_MINUS_60_50_PERCENT due=2027-05-02 amount=Rs 375150.00
+  T_MINUS_7_BALANCE due=2027-06-24 amount=Rs 187575.00
+DATE_CHANGE_CREDIT_APPLIED source=B003 replacement=B004 amount=Rs 12500.00 remainingSourceCredit=Rs 0.00

@@ -1,0 +1,2 @@
+venue_id,name,capacity,weekday_base,slots
+V1,Test Venue,500,1000.00,DAY;NIGHT

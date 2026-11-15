@@ -1,0 +1,11 @@
+target/
+.idea/
+*.iml
+.DS_Store
+.env
+build/
+data/*.sqlite
+data/*.sqlite-shm
+data/*.sqlite-wal
+.pdf-review/
+*.class

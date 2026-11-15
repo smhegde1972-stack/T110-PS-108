@@ -1,0 +1,4 @@
+damage_code,description,rate
+CHAIR,Chair damage,1500.00
+TABLE,Table damage,5000.00
+LIGHT,Lighting damage,8000.00

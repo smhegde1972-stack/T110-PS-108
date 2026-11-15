@@ -1,0 +1,4 @@
+venue_id,name,capacity,weekday_base,slots
+V001,Maple Convention Hall,500,150000.00,DAY;NIGHT
+V002,Orchid Palace,800,250000.00,DAY;NIGHT
+V003,Lakeview Lawn,350,110000.00,DAY;NIGHT

@@ -1,0 +1,5 @@
+QUOTE venue=V1 date=2026-10-24 slot=DAY guests=100 seasonMultiplier=1.6
+  venue=Rs 1600.00
+  GST18 venue+packages=Rs 288.00
+  GST5 catering=Rs 0.00
+  total=Rs 1888.00
