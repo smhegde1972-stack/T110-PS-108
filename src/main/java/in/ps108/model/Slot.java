@@ -7,7 +7,7 @@ public enum Slot {
         return switch (value.trim().toUpperCase()) {
             case "DAY" -> DAY;
             case "NIGHT" -> NIGHT;
-            case "DAY+NIGHT", "DAY_AND_NIGHT" -> DAY_AND_NIGHT;
+            case "BOTH", "DAY+NIGHT", "DAY_AND_NIGHT" -> DAY_AND_NIGHT;
             default -> throw new IllegalArgumentException("Invalid slot: " + value);
         };
     }

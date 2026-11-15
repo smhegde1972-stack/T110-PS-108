@@ -1,0 +1,61 @@
+vendor_id,package_code,package_name,price
+VND-01,SILVER,Silver menu per plate,900.00
+VND-01,GOLD,Gold menu per plate,1400.00
+VND-01,PLATINUM,Platinum menu per plate,2000.00
+VND-02,SILVER,Silver menu per plate,900.00
+VND-02,GOLD,Gold menu per plate,1400.00
+VND-02,PLATINUM,Platinum menu per plate,2000.00
+VND-03,SILVER,Silver menu per plate,900.00
+VND-03,GOLD,Gold menu per plate,1400.00
+VND-03,PLATINUM,Platinum menu per plate,2000.00
+VND-04,SILVER,Silver menu per plate,900.00
+VND-04,GOLD,Gold menu per plate,1400.00
+VND-04,PLATINUM,Platinum menu per plate,2000.00
+VND-05,SILVER,Silver menu per plate,900.00
+VND-05,GOLD,Gold menu per plate,1400.00
+VND-05,PLATINUM,Platinum menu per plate,2000.00
+VND-06,SILVER,Silver menu per plate,900.00
+VND-06,GOLD,Gold menu per plate,1400.00
+VND-06,PLATINUM,Platinum menu per plate,2000.00
+VND-07,SILVER,Silver menu per plate,900.00
+VND-07,GOLD,Gold menu per plate,1400.00
+VND-07,PLATINUM,Platinum menu per plate,2000.00
+VND-08,BASIC,Basic decor,70000.00
+VND-08,CLASSIC,Classic decor,120000.00
+VND-08,GRAND,Grand decor,250000.00
+VND-09,BASIC,Basic decor,65000.00
+VND-09,CLASSIC,Classic decor,120000.00
+VND-09,GRAND,Grand decor,255000.00
+VND-10,BASIC,Basic decor,70000.00
+VND-10,CLASSIC,Classic decor,130000.00
+VND-10,GRAND,Grand decor,255000.00
+VND-11,BASIC,Basic decor,65000.00
+VND-11,CLASSIC,Classic decor,125000.00
+VND-11,GRAND,Grand decor,250000.00
+VND-12,BASIC,Basic decor,60000.00
+VND-12,CLASSIC,Classic decor,130000.00
+VND-12,GRAND,Grand decor,260000.00
+VND-13,BASIC,Basic decor,60000.00
+VND-13,CLASSIC,Classic decor,125000.00
+VND-13,GRAND,Grand decor,260000.00
+VND-14,BASIC,Basic decor,65000.00
+VND-14,CLASSIC,Classic decor,130000.00
+VND-14,GRAND,Grand decor,260000.00
+VND-15,STILLS,Stills package,45000.00
+VND-15,STILLS_VIDEO,Stills + Video package,95000.00
+VND-15,CINEMATIC,Cinematic package,190000.00
+VND-16,STILLS,Stills package,55000.00
+VND-16,STILLS_VIDEO,Stills + Video package,95000.00
+VND-16,CINEMATIC,Cinematic package,180000.00
+VND-17,STILLS,Stills package,45000.00
+VND-17,STILLS_VIDEO,Stills + Video package,100000.00
+VND-17,CINEMATIC,Cinematic package,185000.00
+VND-18,STILLS,Stills package,45000.00
+VND-18,STILLS_VIDEO,Stills + Video package,95000.00
+VND-18,CINEMATIC,Cinematic package,190000.00
+VND-19,STILLS,Stills package,45000.00
+VND-19,STILLS_VIDEO,Stills + Video package,100000.00
+VND-19,CINEMATIC,Cinematic package,180000.00
+VND-20,STILLS,Stills package,50000.00
+VND-20,STILLS_VIDEO,Stills + Video package,100000.00
+VND-20,CINEMATIC,Cinematic package,190000.00

@@ -16,11 +16,17 @@ public final class CsvLoader {
     public static Map<String, Venue> venues(Path path) throws IOException {
         Map<String, Venue> result = new LinkedHashMap<>();
         for (List<String> row : dataRows(path)) {
-            requireColumns(row, 5, "venue");
+            if (row.size() != 5 && row.size() != 6) {
+                throw new IllegalArgumentException("Invalid venue row (expected 5 or 6 columns): " + row);
+            }
+            String id = row.get(0);
+            String name = row.get(1);
+            int capacity = row.size() == 6 ? Integer.parseInt(row.get(3)) : Integer.parseInt(row.get(2));
+            BigDecimal base = row.size() == 6 ? new BigDecimal(row.get(4)) : new BigDecimal(row.get(3));
+            String slotsCol = row.size() == 6 ? row.get(5) : row.get(4);
             Set<Slot> slots = new HashSet<>();
-            for (String slot : row.get(4).split(";")) slots.add(Slot.parse(slot));
-            Venue venue = new Venue(row.get(0), row.get(1), Integer.parseInt(row.get(2)),
-                    new BigDecimal(row.get(3)), slots);
+            for (String slot : slotsCol.split(";")) slots.add(Slot.parse(slot));
+            Venue venue = new Venue(id, name, capacity, base, slots);
             if (result.putIfAbsent(venue.id(), venue) != null)
                 throw new IllegalArgumentException("Duplicate venue id " + venue.id());
         }
@@ -28,22 +34,50 @@ public final class CsvLoader {
     }
 
     public static Map<String, Vendor> vendors(Path path) throws IOException {
+        return vendors(path, null);
+    }
+
+    public static Map<String, Vendor> vendors(Path vendorsPath, Path packagesPath) throws IOException {
         Map<String, Vendor> result = new LinkedHashMap<>();
-        for (List<String> row : dataRows(path)) {
-            requireColumns(row, 5, "vendor");
-            Map<String, BigDecimal> packages = new LinkedHashMap<>();
-            for (String pair : row.get(3).split(";")) {
-                String[] keyValue = pair.split(":", 2);
-                if (keyValue.length != 2) throw new IllegalArgumentException("Invalid package " + pair);
-                String packageName = keyValue[0].trim().toUpperCase(Locale.ROOT);
-                if (packages.putIfAbsent(packageName, new BigDecimal(keyValue[1].trim())) != null)
-                    throw new IllegalArgumentException("Duplicate package " + packageName + " for vendor " + row.get(0));
+        Map<String, Map<String, BigDecimal>> packagesByVendor = (packagesPath != null && Files.exists(packagesPath))
+                ? vendorPackages(packagesPath) : Map.of();
+        for (List<String> row : dataRows(vendorsPath)) {
+            if (row.size() != 4 && row.size() != 5) {
+                throw new IllegalArgumentException("Invalid vendor row (expected 4 or 5 columns): " + row);
             }
-            Vendor vendor = new Vendor(row.get(0), row.get(1),
-                    Vendor.Category.valueOf(row.get(2).toUpperCase(Locale.ROOT)), packages,
-                    new BigDecimal(row.get(4)));
+            String id = row.get(0);
+            String name = row.get(1);
+            Vendor.Category category = Vendor.Category.valueOf(row.get(2).toUpperCase(Locale.ROOT));
+            Map<String, BigDecimal> packages = new LinkedHashMap<>();
+            BigDecimal commission = null;
+            if (row.size() == 5) {
+                for (String pair : row.get(3).split(";")) {
+                    String[] keyValue = pair.split(":", 2);
+                    if (keyValue.length != 2) throw new IllegalArgumentException("Invalid package " + pair);
+                    String packageName = keyValue[0].trim().toUpperCase(Locale.ROOT);
+                    if (packages.putIfAbsent(packageName, new BigDecimal(keyValue[1].trim())) != null)
+                        throw new IllegalArgumentException("Duplicate package " + packageName + " for vendor " + id);
+                }
+                commission = new BigDecimal(row.get(4).trim());
+            }
+            if (packagesByVendor.containsKey(id)) {
+                packages.putAll(packagesByVendor.get(id));
+            }
+            Vendor vendor = new Vendor(id, name, category, packages, commission);
             if (result.putIfAbsent(vendor.id(), vendor) != null)
                 throw new IllegalArgumentException("Duplicate vendor id " + vendor.id());
+        }
+        return result;
+    }
+
+    public static Map<String, Map<String, BigDecimal>> vendorPackages(Path path) throws IOException {
+        Map<String, Map<String, BigDecimal>> result = new LinkedHashMap<>();
+        for (List<String> row : dataRows(path)) {
+            requireColumns(row, 4, "vendor package");
+            String vendorId = row.get(0).trim();
+            String packageCode = row.get(1).trim().toUpperCase(Locale.ROOT);
+            BigDecimal price = new BigDecimal(row.get(3).trim());
+            result.computeIfAbsent(vendorId, k -> new LinkedHashMap<>()).put(packageCode, price);
         }
         return result;
     }
@@ -127,7 +161,7 @@ public final class CsvLoader {
         if (row.size() == 1 && row.get(0).isBlank()) return;
         if (row.size() == 1 && row.get(0).trim().startsWith("#")) return;
         if (row.size() == 1 && row.get(0).trim().equalsIgnoreCase("date")) return;
-        if (!row.isEmpty() && (row.get(0).equalsIgnoreCase("venue_id") || row.get(0).equalsIgnoreCase("vendor_id") || row.get(0).equalsIgnoreCase("damage_code"))) return;
+        if (!row.isEmpty() && (row.get(0).equalsIgnoreCase("venue_id") || row.get(0).equalsIgnoreCase("vendor_id") || row.get(0).equalsIgnoreCase("damage_code") || row.get(0).equalsIgnoreCase("item_code") || row.get(0).equalsIgnoreCase("package_id"))) return;
         rows.add(List.copyOf(row));
     }
 }

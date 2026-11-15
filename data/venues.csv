@@ -1,4 +1,11 @@
+
 venue_id,name,capacity,weekday_base,slots
 V001,Maple Convention Hall,500,150000.00,DAY;NIGHT
 V002,Orchid Palace,800,250000.00,DAY;NIGHT
 V003,Lakeview Lawn,350,110000.00,DAY;NIGHT
+V004,Royal Heritage Palace,1000,300000.00,DAY;NIGHT
+V005,Grand Lotus Banquet,650,200000.00,DAY;NIGHT
+V006,Green Valley Resort,1200,350000.00,DAY;NIGHT
+V007,Silver Oak Convention Centre,1500,400000.00,DAY;NIGHT
+V008,Crystal Garden Venue,450,135000.00,DAY;NIGHT
+V009,Sunrise Wedding Pavilion,250,85000.00,DAY;NIGHT

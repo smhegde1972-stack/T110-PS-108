@@ -17,8 +17,10 @@ public class Main {
         Path commandsPath=Path.of(args.length>2?args[2]:"data/commands.txt");
         Path auspiciousPath=Path.of(args.length>3?args[3]:"data/auspicious-dates.csv");
         Path damageRatesPath=Path.of(args.length>4?args[4]:"data/damage-rate-card.csv");
+Path packagesPath=Path.of(args.length>5?args[5]:"organizer-input/T110-PS-108-sample-data/vendor_packages.csv");
         Map<String,Venue> venues=CsvLoader.venues(venuesPath);
         Map<String,Vendor> vendors=CsvLoader.vendors(vendorsPath);
+Map<String,Vendor> vendors=CsvLoader.vendors(vendorsPath,packagesPath);
         Map<String,BigDecimal> damageRates=CsvLoader.damageRates(damageRatesPath);
         PricingService pricing=new PricingService(CsvLoader.auspiciousDates(auspiciousPath));
         BookingEngine engine=new BookingEngine(venues,vendors,pricing);
@@ -39,13 +41,11 @@ public class Main {
             try {
                 String[] p=line.split("\\|",-1);
                 if(p.length<2) throw new IllegalArgumentException("Expected TIMESTAMP|COMMAND|...");
-                commands.add(new TimedCommand(lineNo,line,LocalDateTime.parse(p[0])));
+                commands.add(new TimedCommand(lineNo,line,LocalDateTime.parse(p[0].replace(" ", "T"))));
             } catch(Exception ex) {
                 System.err.println("ERROR line "+lineNo+": "+ex.getMessage()); throw ex;
             }
-        }
-        commands.sort(Comparator.comparing(TimedCommand::timestamp).thenComparingInt(TimedCommand::lineNo));
-        for(TimedCommand command:commands) {
+        }        for(TimedCommand command:commands) {
             int currentLineNo=command.lineNo();
             String[] p=command.raw().split("\\|",-1);
             LocalDateTime timestamp=command.timestamp();

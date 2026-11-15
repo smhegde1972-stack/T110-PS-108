@@ -1,0 +1,9 @@
+venue_id,venue_name,city,capacity,weekday_base_rental,slots
+VEN-01,Lotus Convention Hall,Bengaluru,800,250000.00,DAY;NIGHT
+VEN-02,Royal Orchid Gardens,Bengaluru,500,250000.00,DAY;NIGHT
+VEN-03,Taj Banquets,Mangaluru,1500,250000.00,DAY;NIGHT
+VEN-04,Sri Sai Kalyana Mantapa,Mangaluru,1500,200000.00,DAY;NIGHT
+VEN-05,Palm Grove Lawns,Mysuru,300,250000.00,DAY;NIGHT
+VEN-06,Emerald Palace,Bengaluru,300,150000.00,DAY;NIGHT
+VEN-07,Heritage Courtyard,Bengaluru,1000,80000.00,DAY;NIGHT
+VEN-08,Skyline Terrace,Mangaluru,800,120000.00,DAY;NIGHT

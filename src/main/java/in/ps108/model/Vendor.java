@@ -12,7 +12,7 @@ public record Vendor(String id, String name, Category category, Map<String, BigD
         if (id == null || id.isBlank()) throw new IllegalArgumentException("Vendor id is required");
         if (name == null || name.isBlank()) throw new IllegalArgumentException("Vendor name is required");
         if (category == null) throw new IllegalArgumentException("Vendor category is required");
-        if (packages == null || packages.isEmpty()) throw new IllegalArgumentException("At least one vendor package is required");
+        if (packages == null) throw new IllegalArgumentException("At least one vendor package is required");
         Map<String,BigDecimal> normalizedPackages=new LinkedHashMap<>();
         for (var entry : packages.entrySet()) {
             if (entry.getKey() == null || entry.getKey().isBlank()) throw new IllegalArgumentException("Package name is required");
@@ -21,10 +21,15 @@ public record Vendor(String id, String name, Category category, Map<String, BigD
             if (normalizedPackages.putIfAbsent(key,entry.getValue()) != null) throw new IllegalArgumentException("Duplicate package name: "+key);
         }
         packages = Map.copyOf(normalizedPackages);
-        if (commissionRate == null || commissionRate.signum() < 0 || commissionRate.compareTo(BigDecimal.ONE) > 0)
+        if (commissionRate == null) commissionRate = category == Category.CATERING ? new BigDecimal("0.08") : new BigDecimal("0.15");
+        if (commissionRate.signum() < 0 || commissionRate.compareTo(BigDecimal.ONE) > 0)
             throw new IllegalArgumentException("Commission rate must be between 0 and 1");
         BigDecimal requiredRate=category==Category.CATERING?new BigDecimal("0.08"):new BigDecimal("0.15");
         if(commissionRate.compareTo(requiredRate)!=0) throw new IllegalArgumentException("Commission rate for "+category+" must be "+requiredRate.toPlainString());
+    }
+
+    public Vendor withPackages(Map<String, BigDecimal> newPackages) {
+        return new Vendor(id, name, category, newPackages, commissionRate);
     }
 
     public BigDecimal packagePrice(String packageName) {
