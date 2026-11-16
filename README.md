@@ -1,130 +1,214 @@
 # PS-108 — Wedding and Event Venue Booking Engine
 
-Java 17 implementation for the T110-PS-108 capstone, including a local browser-based frontend and a lightweight Java HTTP server.
+Java 17 implementation for the T110-PS-108 capstone, including a browser-based customer frontend, an operations dashboard, and a Java HTTP server.
 
-## Requirements
-- Java 17+
-- Maven 3.8+ (for JUnit tests). Booking holds and enquiry queues use the Xerial SQLite JDBC runtime dependency declared in `pom.xml`.
+## 1. Requirements
 
-## Run the website locally
+- Java 17 or later
+- Maven 3.8 or later
+- SQLite JDBC (included through the Maven dependency in `pom.xml`)
+- A modern web browser
 
-From a terminal in the project root (the folder containing `pom.xml` and `data`):
+## 2. Build and test
+
+From the project root (the directory containing `pom.xml`):
+
+```bash
+mvn clean test
+mvn package
+```
+
+The project uses JUnit 5 for automated tests.
+
+## 3. Run the website locally
+
+Build the application and prepare the runtime classpath:
+
 ```bash
 mvn clean package
 mvn dependency:build-classpath "-Dmdep.outputFile=target/runtime-classpath.txt" -DincludeScope=runtime
+```
+
+On Windows PowerShell:
+
+```powershell
 $runtime = Get-Content target/runtime-classpath.txt -Raw
 java -cp "target/classes;$runtime" in.ps108.WebMain 8080 data/ps108-bookings.sqlite
 ```
-Keep the server process running, then open **http://localhost:8080** in your browser. Open **http://localhost:8080/admin.html** for the booking-operations dashboard. In IntelliJ, the same server can be started with an Application run configuration for `in.ps108.WebMain`, using the project root as working directory.
 
-The customer page supports venue browsing, date/slot/guest selection, vendor package selection, quote calculation, reservation creation and quote printing. The operations dashboard (`/admin.html`) exposes venue/vendor registration, enquiry and 72-hour hold creation, hold expiry and queue visibility, confirmation, advance schedules, simulated payments, late-payment checks, cancellation calculations, package swaps, date changes, post-event actuals, final settlement, disputes, payout calculations, and printable reports.
+On Linux or macOS:
 
-**Important demo limits:** booking holds, queue positions and booking states are stored in `data/ps108-bookings.sqlite`, so they survive Java server restarts. Payments, disputes, cancellation result records and newly registered master data remain demo/session state. Payments are simulated; there is no authentication or real payment gateway. Date-change credit can be applied to a confirmed replacement using the CLI `APPLY_CREDIT` command. Local CLI output is checked against self-authored brief-based fixtures. Stop the Java process to shut the local site down.
+```bash
+runtime=$(cat target/runtime-classpath.txt)
+java -cp "target/classes:$runtime" in.ps108.WebMain 8080 data/ps108-bookings.sqlite
+```
 
-If port 8080 is already in use, add `18080` to the Application run configuration's **Program arguments** and open `http://localhost:18080` instead.
+Keep the server running and open:
 
-## Build and run the console workflow
+- Customer website: http://localhost:8080
+- Operations dashboard: http://localhost:8080/admin.html
+
+If port 8080 is occupied, use another port, such as 18080, and open the corresponding URL.
+
+Stop the server using `Ctrl+C`.
+
+### Customer frontend
+
+The customer page supports:
+
+- Venue browsing
+- Event date, slot and guest selection
+- Vendor package selection
+- Quote calculation
+- Reservation creation
+- Quote printing
+
+### Operations dashboard
+
+The admin dashboard supports:
+
+- Venue and vendor registration
+- Enquiry and hold creation
+- Hold expiry and queue visibility
+- Booking confirmation
+- Advance schedules and simulated payments
+- Late-payment checks
+- Cancellation calculations
+- Package swaps and date changes
+- Post-event actuals and damages
+- Final settlement
+- Dispute management
+- Payout calculations
+- Printable reports
+
+## 4. Run the console workflow
+
+Run the standard application tests:
+
 ```bash
 mvn test
 mvn package
-java -jar target/wedding-venue-engine-1.0.0.jar
-```
-The command-file entry point can also be run with:
-```bash
-java -cp target/classes in.ps108.Main data/venues.csv data/vendors.csv data/commands.txt
 ```
 
-## Included capabilities
-- Responsive customer frontend and operations dashboard (`src/main/resources/static`) with local Java HTTP API (`in.ps108.WebMain`)
-- Browser forms for venue/vendor registration, enquiries/holds/queues, confirmation, simulated payments, cancellation, swaps, date changes, post-event actuals, settlement, disputes and payout calculation
-- Printable quote and operations reports via browser print / Save as PDF
-- Venue/vendor CSV loading with quoted commas, doubled quotes, and quoted multiline fields
+The command-line entry point is:
+
+```text
+in.ps108.Main
+```
+
+It accepts input files in this order:
+
+1. Venues CSV
+2. Vendors CSV
+3. Commands file
+4. Auspicious dates CSV
+5. Damage rate card CSV
+6. Vendor packages CSV
+
+Example organizer sample invocation from the project root:
+
+```powershell
+& "C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.2.3\plugins\maven\lib\maven3\bin\mvn.cmd" exec:java "-Dexec.mainClass=in.ps108.Main" "-Dexec.args=organizer-input/T110-PS-108-sample-data/venues.csv organizer-input/T110-PS-108-sample-data/vendors.csv organizer-input/T110-PS-108-sample-data/commands.txt organizer-input/T110-PS-108-sample-data/auspicious_dates.csv organizer-input/T110-PS-108-sample-data/damage_rate_card.csv organizer-input/T110-PS-108-sample-data/vendor_packages.csv"
+```
+
+The organizer sample workflow should be considered verified only after it completes successfully and its generated outputs have been checked.
+
+## 5. Included capabilities
+
+- Responsive customer frontend and operations dashboard
+- Java HTTP API using `in.ps108.WebMain`
+- CSV master-data loading
 - Deterministic command-file processing
-- Hold expiry and FIFO queue promotion
-- Venue pricing with max season multiplier and second-slot discount
+- Booking holds and FIFO enquiry queues
+- SQLite-backed booking and hold persistence
+- Venue pricing, seasonal multipliers and second-slot discounts
 - Catering minimum guarantee and excess-guest pricing
 - Advance schedule generation
-- Cancellation ladder, vendor line overrides, and forfeiture cap
+- Late fees and automatic cancellation
+- Cancellation ladder and forfeiture cap
+- Vendor-specific cancellation terms
 - Package-switch fee calculation
-- Final bill tax/advance calculations and vendor commission calculation
-- Basic JUnit tests plus a dependency-free regression runner (`tools/StandaloneChecks.java`) for environments where Maven Central is unavailable
-- Dispute ledger, payout eligibility after 7 days, and vendor/venue commission calculation
-- Advance tranche ledger, late fees, and automatic cancellation after 21 days overdue
-- Damage-code quantity charges loaded from `data/damage-rate-card.csv`
-- Command-line quote output and date-change credit redemption against an unpaid replacement booking
-- Commission rates from the design document: venue 12%, catering 8%, decor/photography 15%
+- Date-change credit calculation and redemption
+- Final bill and tax calculations
+- Vendor and venue commission calculations
+- Dispute ledger and payout eligibility
+- Damage-code quantity charges
+- Printable quotes and operations reports
 
-## Project rule interpretations (recorded in `decision-log.md`)
-1. All money is rounded to 2 decimals using HALF_UP at each final line-item boundary.
+## 6. Business-rule interpretations
+
+The current implementation records the following interpretations:
+
+1. Money is calculated using `BigDecimal` and rounded to two decimal places using HALF_UP at line-item boundaries.
 2. Catering minimum guarantee is `max(ceil(quotedGuests * 0.80), 150)`.
-3. Excess pricing applies only to plates above quoted guests + 10%; the exact +10% boundary has no premium. The guaranteed quantity is still a minimum billed quantity.
-4. Late fees count each started 7-day period after the 5-day grace: 1% starts on overdue day 6; the next 1% starts on day 13.
-5. The general cancellation cap is `min(calculated forfeiture, paid advances + ₹25,000)`.
-6. The 60-day and 7-day advance schedule boundaries are inclusive in the nearer-deadline rule: confirmation at 60 days merges the first two tranches; confirmation at 7 days makes the full amount due immediately.
-7. A free date change requires more than 90 days before the original event and a new date no more than 180 days after the request date. Otherwise, cancellation applies and 50% of capped forfeiture becomes credit toward a replacement booking.
-8. Date-change credit is tracked separately from cash advances and applied using `APPLY_CREDIT` before replacement-booking payments.
-9. Vendor-specific cancellation terms are calculated for their lines; the general ladder applies to remaining contract value and the cap applies once to the aggregate.
-10. Package swaps exactly 30 days before the event are free; a switch fee applies only when fewer than 30 days remain.
-11. GST is 18% on venue and packages, 5% on catering without ITC; tips are excluded. Rate-card damages are added as a separate line.
-12. The self-authored acceptance fixture and sample output are the local expected-output baseline; the project does not claim equivalence to organizer files that were not supplied.
-13. Measure the 48-hour dispute freeze window from the recorded event-close timestamp.
+3. Excess catering pricing applies only above quoted guests plus 10%.
+4. Late fees count each started seven-day period after the five-day grace period.
+5. General cancellation forfeiture is capped at paid advances plus ₹25,000.
+6. At 60 days, the first two advance tranches merge. At seven days, the full amount is due immediately.
+7. A free date change requires more than 90 days before the original event and a destination date no more than 180 days after the request date.
+8. Date-change credit is tracked separately from cash advances and applied through `APPLY_CREDIT`.
+9. Vendor-specific cancellation terms are calculated for their respective lines, with the general cap applied once to aggregate forfeiture.
+10. Package swaps exactly 30 days before the event are free; the switch fee applies only when fewer than 30 days remain.
+11. GST is calculated according to the implemented venue, catering and package tax rules. Tips are excluded.
+12. The self-authored acceptance tests provide an additional local regression baseline.
+13. The 48-hour dispute freeze window is measured from the recorded event-close timestamp.
 
-## Verification without downloading JUnit
-```bash
-./tools/run-standalone-checks.sh
-```
-This compiles the application with `javac --release 17`, runs 18 dependency-free regression checks, and runs the sample command file. The JUnit 5 suite is also included for `mvn test` when dependencies are available.
+See `decision-log.md` and the design document for the detailed assumptions and rationale.
 
-## Latest verification
+## 7. Verification
 
-Latest prior verification: 2026-11-01, using IntelliJ's bundled Maven:
+Latest recorded automated test run:
 
-- `mvn clean test`: 59 tests passed, 0 failed, 0 errors, 0 skipped (includes timestamp ordering, concurrent hold integrity, JSON escaping, cancellation/refund boundaries, and retry safety).
-- `mvn package`: successful; created `target/wedding-venue-engine-1.0.0.jar`; the same 59 tests passed during the package lifecycle.
-- Java source/test compilation with `javac --release 17` succeeded.
-- Standalone regression checks: 18 passed; the sample command workflow completed with tax-inclusive advance amounts.
-- The packaged JAR output exactly matched `docs/sample-run-output.txt` (last verified 2026-10-28).
-- `node --test src/test/js/customer-money.test.cjs`: 1 passed; the customer formatter displays API paise.
-- `node --check` passed for both customer and operations scripts.
-- Previously recorded live HTTP smoke (2026-10-22): customer/admin pages returned 200; quote, booking, rate-card actuals, settlement, dispute freeze/release, admin enquiry/hold, confirmation, schedule/payment, and first-payment queue clearing passed.
-- Earlier HTTP smoke checks verified invalid date/state/commission inputs return 400 and a `1.005` payment is recorded as `1.01`.
+**Date:** 2026-11-16
 
-Organizer-specific expected-output files are unavailable; the project uses its self-authored acceptance baseline instead. Late fees remain separately reported because the supplied final-bill formula excludes them. See [docs/requirements-audit.md](docs/requirements-audit.md) and [docs/deferred-work.md](docs/deferred-work.md).
+- `mvn clean test`: 74 tests passed
+- Failures: 0
+- Errors: 0
+- Skipped: 0
+- Build result: `BUILD SUCCESS`
 
-Hold persistence update verification: `mvn package dependency:build-classpath "-Dmdep.outputFile=target/runtime-classpath.txt" -DincludeScope=runtime` on 2026-11-05 passed 65 tests and packaged the application. Coverage includes SQLite persistence, restart, FIFO promotion, post-event-state persistence, separate-slot behavior, cancelled queue entries and payment/expiry races. Customer and admin JavaScript syntax checks passed with Node.js.
+This verifies the automated JUnit test suite. It does not, by itself, establish that every organizer sample command or browser workflow has passed end-to-end verification.
 
-## Commands
-Each line in `data/commands.txt` is:
-`TIMESTAMP|COMMAND|ARGUMENTS...`
+Additional checks include JavaScript syntax checks and customer-side money-formatting tests from the project's test files.
 
-Supported commands:
-- `QUOTE|venueId|date|slot|guests|vendorId:package;vendorId:package`
-- `ENQUIRE|enquiryId|client|venueId|date|slot|guests`
-- `HOLD|enquiryId`
-- `CONFIRM|bookingId|enquiryId|venueId|date|slot|guests|vendorId:package;vendorId:package`
-- `PAY|bookingId|amount|paymentDate` (paymentDate is retained in the command file; command timestamp controls processing)
-- `CANCEL|bookingId|cancelDate` (date is optional; defaults to command timestamp date)
-- `SWAP|bookingId|vendorId|newPackage`
-- `SETTLE|bookingId`
-- `SCHEDULE|bookingId|asOfDate`
-- `DATECHANGE|bookingId|requestDate|newDate|slot`
-- `APPLY_CREDIT|cancelledSourceBookingId|confirmedReplacementBookingId` (apply available 50% date-change credit before payments on the replacement)
-- `ACTUALS|bookingId|actualGuests|damageCode:quantity;damageCode:quantity` (`-` means no damages; codes/rates come from `data/damage-rate-card.csv`)
-- `DISPUTE|disputeId|bookingId|vendorId|filedAt|eventClosedAt|reason`
-- `RESOLVE_DISPUTE|disputeId`
-- `PAYOUT|bookingId|vendorId|grossLineValue|eventClosedAt` (command timestamp is payout evaluation time)
-- `PAYOUT_VENUE|bookingId|venueId|grossLineValue|eventClosedAt` (command timestamp is payout evaluation time)
+## 8. CSV master data
 
-Slots are `DAY`, `NIGHT`, or `DAY+NIGHT`. Vendors are referenced by their CSV IDs. Dates use ISO format (`yyyy-MM-dd`), timestamps use `yyyy-MM-dd'T'HH:mm:ss`.
+CSV files contain a header row followed by data rows.
 
-### CSV master data
-CSV files use a header followed by data rows. The exact ordered columns and examples are documented in [docs/design-document.md](docs/design-document.md#41-csv-input-formats). Package lists and venue slots use semicolons inside their field; quote such a CSV field if it contains a comma. The loader accepts standard quoted commas, doubled quotes, and quoted multiline fields. `data/auspicious-dates.csv` and `data/damage-rate-card.csv` are loaded from the project data directory.
+The project uses:
 
-## Repository submission checklist
-- Keep source, tests, data, README, design PDF, and decision log in the repository.
-- Never commit secrets or private customer data.
-- Check whether organizers accept a private repository and grant access if needed.
+- `data/venues.csv`
+- `data/vendors.csv`
+- `data/commands.txt`
+- `data/auspicious-dates.csv`
+- `data/damage-rate-card.csv`
+- `vendor_packages.csv` or the configured package input file
 
-The capstone email requires a 5-minute demo video link in the final repository. The project uses self-authored brief-based checks as its local acceptance baseline; organizer-specific fixtures were not supplied and are not claimed to have been matched. See [docs/self-authored-acceptance-checks.md](docs/self-authored-acceptance-checks.md) and [docs/requirements-audit.md](docs/requirements-audit.md).
+The organizer sample inputs are located in:
 
-See [docs/requirements-audit.md](docs/requirements-audit.md) for the current requirements traceability, known gaps, and items awaiting the official organizer brief.
+`organizer-input/T110-PS-108-sample-data/`
+
+Dates use ISO format (`yyyy-MM-dd`). Command timestamps use the format expected by the selected command-file format.
+
+## 9. Demo limitations and known scope
+
+- Payments are simulated; no real payment gateway is integrated.
+- The application does not currently provide authentication.
+- The admin dashboard is intended for local demonstration.
+- Date-change credit is applied using the console `APPLY_CREDIT` command.
+- Local sample and acceptance tests should not be represented as organizer-certified results unless those results have been independently verified.
+
+See `docs/deferred-work.md` for remaining limitations and follow-up work.
+
+## 10. Repository submission checklist
+
+Before submission:
+
+- Include source code and automated tests.
+- Include input data and required sample files.
+- Include README, design document and decision log.
+- Include test report and deferred-work document.
+- Verify the repository does not contain secrets or private customer information.
+- Add the required five-minute demonstration video link.
+- Confirm repository access permissions with the organizers.
+

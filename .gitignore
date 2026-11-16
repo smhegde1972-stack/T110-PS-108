@@ -9,3 +9,5 @@ data/*.sqlite-shm
 data/*.sqlite-wal
 .pdf-review/
 *.class
+
+Main.java.backup

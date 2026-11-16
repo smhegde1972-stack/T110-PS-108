@@ -13,25 +13,51 @@ import java.util.*;
 public final class CsvLoader {
     private CsvLoader() {}
 
+
     public static Map<String, Venue> venues(Path path) throws IOException {
         Map<String, Venue> result = new LinkedHashMap<>();
+
         for (List<String> row : dataRows(path)) {
             if (row.size() != 5 && row.size() != 6) {
-                throw new IllegalArgumentException("Invalid venue row (expected 5 or 6 columns): " + row);
+                throw new IllegalArgumentException(
+                        "Invalid venue row (expected 5 or 6 columns): " + row
+                );
             }
-            String id = row.get(0);
-            String name = row.get(1);
-            int capacity = row.size() == 6 ? Integer.parseInt(row.get(3)) : Integer.parseInt(row.get(2));
-            BigDecimal base = row.size() == 6 ? new BigDecimal(row.get(4)) : new BigDecimal(row.get(3));
-            String slotsCol = row.size() == 6 ? row.get(5) : row.get(4);
+
+            String id = row.get(0).trim();
+            String name = row.get(1).trim();
+
+            int capacity;
+            BigDecimal base;
+            String slotsCol;
+
+            if (row.size() == 6) {
+                // Organizer format: ID, Name, City, Capacity, Base, Slots
+                capacity = Integer.parseInt(row.get(3).trim());
+                base = new BigDecimal(row.get(4).trim());
+                slotsCol = row.get(5).trim();
+            } else {
+                // Existing 5-column format
+                capacity = Integer.parseInt(row.get(2).trim());
+                base = new BigDecimal(row.get(3).trim());
+                slotsCol = row.get(4).trim();
+            }
+
             Set<Slot> slots = new HashSet<>();
-            for (String slot : slotsCol.split(";")) slots.add(Slot.parse(slot));
+            for (String slot : slotsCol.split(";")) {
+                slots.add(Slot.parse(slot.trim()));
+            }
+
             Venue venue = new Venue(id, name, capacity, base, slots);
-            if (result.putIfAbsent(venue.id(), venue) != null)
+
+            if (result.putIfAbsent(venue.id(), venue) != null) {
                 throw new IllegalArgumentException("Duplicate venue id " + venue.id());
+            }
         }
+
         return result;
     }
+
 
     public static Map<String, Vendor> vendors(Path path) throws IOException {
         return vendors(path, null);
@@ -53,11 +79,14 @@ public final class CsvLoader {
             if (row.size() == 5) {
                 for (String pair : row.get(3).split(";")) {
                     String[] keyValue = pair.split(":", 2);
-                    if (keyValue.length != 2) throw new IllegalArgumentException("Invalid package " + pair);
+                    if (keyValue.length != 2) {
+                        throw new IllegalArgumentException("Invalid package " + pair);
+                    }
+
                     String packageName = keyValue[0].trim().toUpperCase(Locale.ROOT);
-                    if (packages.putIfAbsent(packageName, new BigDecimal(keyValue[1].trim())) != null)
-                        throw new IllegalArgumentException("Duplicate package " + packageName + " for vendor " + id);
+                    packages.put(packageName, new BigDecimal(keyValue[1].trim()));
                 }
+
                 commission = new BigDecimal(row.get(4).trim());
             }
             if (packagesByVendor.containsKey(id)) {
@@ -84,12 +113,31 @@ public final class CsvLoader {
 
     public static Set<LocalDate> auspiciousDates(Path path) throws IOException {
         Set<LocalDate> dates = new HashSet<>();
+
         for (List<String> row : dataRows(path)) {
-            if (row.size() != 1) throw new IllegalArgumentException("Invalid auspicious-date row: " + row);
-            dates.add(LocalDate.parse(row.get(0).trim()));
+            if (row.size() != 1) {
+                throw new IllegalArgumentException(
+                        "Invalid auspicious-date row: " + row
+                );
+            }
+
+            String value = row.get(0).trim();
+
+            try {
+                dates.add(LocalDate.parse(value)); // yyyy-MM-dd
+            } catch (java.time.format.DateTimeParseException e) {
+                dates.add(
+                        LocalDate.parse(
+                                value,
+                                java.time.format.DateTimeFormatter.ofPattern("dd-MM-uuuu")
+                        )
+                );
+            }
         }
+
         return dates;
     }
+
 
     public static Map<String, BigDecimal> damageRates(Path path) throws IOException {
         Map<String, BigDecimal> rates = new LinkedHashMap<>();
