@@ -12,6 +12,30 @@ import java.util.*;
 
 public class Main {
 
+    // Helper to safely process CONFIRM commands without aborting the whole workflow.
+    private static Booking safeConfirm(BookingEngine engine, String enquiryId, LocalDateTime timestamp) {
+        try {
+            BookingEngine.Enquiry enquiry = engine.enquiries().get(enquiryId);
+            if (enquiry == null) {
+                throw new IllegalArgumentException("Unknown enquiry: " + enquiryId);
+            }
+            return engine.confirm(
+                    enquiryId,
+                    enquiryId,
+                    enquiry.venueId(),
+                    enquiry.date(),
+                    enquiry.slot(),
+                    enquiry.guests(),
+                    enquiry.selectedPackages(),
+                    timestamp
+            );
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            // Log the error in the same style as other parsing errors; Main will continue processing.
+            System.err.println("ERROR line " + (timestamp != null ? "(timestamp " + timestamp + ")" : "") + ": " + e.getMessage());
+            return null;
+        }
+    }
+
     private record TimedCommand(int lineNo, String raw, LocalDateTime timestamp) {}
 
     public static void main(String[] args) throws Exception {
@@ -184,6 +208,51 @@ public class Main {
                                     + " (ENQUIRE creates the temporary hold)");
 
                     case "CONFIRM" -> {
+
+                        Booking b = null;
+                        // Organizer format (only enquiryId)
+                        if (p.length < 9) {
+                            String enquiryId = p[2];
+                            b = safeConfirm(engine, enquiryId, timestamp);
+                        } else {
+                            // Legacy format
+                            String bookingId = p[2];
+                            String enquiryId = p[3];
+                            b = engine.confirm(
+                                    bookingId,
+                                    enquiryId,
+                                    p[4],
+                                    LocalDate.parse(p[5]),
+                                    Slot.parse(p[6]),
+                                    Integer.parseInt(p[7]),
+                                    parsePackages(p[8]),
+                                    timestamp
+                            );
+                        }
+                        if (b == null) {
+                            // Confirmation failed; continue to next command.
+                            break;
+                        }
+
+                        System.out.println(
+                                "CONFIRMED " + b.id()
+                                        + " | venue=" + Money.fmt(engine.quoteVenue(b))
+                        );
+
+                        List<AdvanceService.Tranche> schedule =
+                                advanceService.schedule(
+                                        paymentContractValue(b, engine),
+                                        timestamp.toLocalDate(),
+                                        b.eventDate()
+                                );
+
+                        advanceLedgers.put(
+                                b.id(),
+                                new AdvanceLedger(schedule, advanceService)
+                        );
+
+                        confirmationDates.put(b.id(), timestamp.toLocalDate());
+                        printSchedule(b, schedule);
 
                         Booking b;
 
