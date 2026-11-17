@@ -207,17 +207,22 @@ public class Main {
                             System.out.println(timestamp + " HOLD request observed for " + p[2]
                                     + " (ENQUIRE creates the temporary hold)");
 
+
                     case "CONFIRM" -> {
 
-                        Booking b = null;
-                        // Organizer format (only enquiryId)
+                        Booking b;
+
+                        // Organizer format: CONFIRM|timestamp|enquiryId
                         if (p.length < 9) {
                             String enquiryId = p[2];
                             b = safeConfirm(engine, enquiryId, timestamp);
                         } else {
-                            // Legacy format
+                            // Legacy format:
+                            // timestamp|CONFIRM|bookingId|enquiryId|venue|date|slot|guests|packages
+
                             String bookingId = p[2];
                             String enquiryId = p[3];
+
                             b = engine.confirm(
                                     bookingId,
                                     enquiryId,
@@ -229,8 +234,8 @@ public class Main {
                                     timestamp
                             );
                         }
+
                         if (b == null) {
-                            // Confirmation failed; continue to next command.
                             break;
                         }
 
@@ -252,74 +257,10 @@ public class Main {
                         );
 
                         confirmationDates.put(b.id(), timestamp.toLocalDate());
-                        printSchedule(b, schedule);
 
-                        Booking b;
-
-                        if (p.length >= 9) {
-                            // Legacy format:
-                            // timestamp|CONFIRM|bookingId|enquiryId|venue|date|slot|guests|packages
-
-                            String bookingId = p[2];
-                            String enquiryId = p[3];
-
-                            b = engine.confirm(
-                                    bookingId,
-                                    enquiryId,
-                                    p[4],
-                                    LocalDate.parse(p[5]),
-                                    Slot.parse(p[6]),
-                                    Integer.parseInt(p[7]),
-                                    parsePackages(p[8]),
-                                    timestamp
-                            );
-
-                        } else {
-                            // Organizer format:
-                            // CONFIRM|timestamp|enquiryId
-
-                            String enquiryId = p[2];
-                            BookingEngine.Enquiry enquiry =
-                                    engine.enquiries().get(enquiryId);
-
-                            if (enquiry == null) {
-                                throw new IllegalArgumentException(
-                                        "Unknown enquiry: " + enquiryId
-                                );
-                            }
-
-                            b = engine.confirm(
-                                    enquiryId,
-                                    enquiryId,
-                                    enquiry.venueId(),
-                                    enquiry.date(),
-                                    enquiry.slot(),
-                                    enquiry.guests(),
-                                    enquiry.selectedPackages(),
-                                    timestamp
-                            );
-                        }
-
-                        System.out.println(
-                                "CONFIRMED " + b.id()
-                                        + " | venue=" + Money.fmt(engine.quoteVenue(b))
-                        );
-
-                        List<AdvanceService.Tranche> schedule =
-                                advanceService.schedule(
-                                        paymentContractValue(b, engine),
-                                        timestamp.toLocalDate(),
-                                        b.eventDate()
-                                );
-
-                        advanceLedgers.put(
-                                b.id(),
-                                new AdvanceLedger(schedule, advanceService)
-                        );
-
-                        confirmationDates.put(b.id(), timestamp.toLocalDate());
                         printSchedule(b, schedule);
                     }
+
 
                     case "PAY", "PAYMENT" -> {
 
