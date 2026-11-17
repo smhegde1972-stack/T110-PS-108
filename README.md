@@ -111,8 +111,8 @@ All CSV files contain a header row, use commas as separators, and are UTF‑8 en
 |------|---------|--------------------------------|
 | `quotes.csv` | Quote generated for every `ENQUIRY`. | `enquiry_id,status,venue_rental,catering,decor,photography,total_contract,tranche1_due,tranche1_amount,tranche2_due,tranche2_amount,tranche3_due,tranche3_amount` |
 | `event_log.csv` | Chronological log of every command processed. | `line_no,enquiry_id,command,status,amount,message` |
-| `cancellations.csv` | Details of every `CANCEL` command and forfeiture calculation. | `cancellation_id,enquiry_id,request_date,refund_amount,forfeiture_amount,reason` |
-| `settlements.csv` | Final settlement information for each event. | `settlement_id,enquiry_id,venue_payout,catering_payout,decor_payout,photography_payout,total_payout,settlement_date` |
+| `cancellations.csv` | Details of every `CANCEL` command and forfeiture calculation. | `enquiry_id,cancel_date,days_before,venue_forfeit,catering_forfeit,decor_forfeit,photo_forfeit,total_forfeit,paid,cap_applied,refund_or_recoverable` |
+| `settlements.csv` | Final settlement information for each event. | `enquiry_id,venue_amount,catering_amount,packages_amount,switch_fees,damages,gst,advances_paid,balance_due,venue_payout,catering_payout,decor_payout,photo_payout,frozen_vendor` |
 
 The files are written to the working directory in the order shown above and use the exact column order required by the organizer.
 
