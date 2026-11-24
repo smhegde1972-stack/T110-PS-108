@@ -68,10 +68,17 @@ public final class WebMain {
     }
 
     public static void main(String[] args) throws Exception {
-        int port = args.length > 0 ? Integer.parseInt(args[0]) : 8081;
-        Path databasePath=args.length>1?Path.of(args[1]):Path.of("data","ps108-bookings.sqlite");
-        WebMain app = new WebMain(databasePath,Clock.systemDefaultZone());
-        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", port), 0);
+        int port = Integer.parseInt(
+                System.getenv().getOrDefault("PORT", "8081")
+        );
+        Path databasePath = args.length > 1
+                ? Path.of(args[1])
+                : Path.of("data", "ps108-bookings.sqlite");
+
+        WebMain app = new WebMain(databasePath, Clock.systemDefaultZone());
+        HttpServer server = HttpServer.create(
+                new InetSocketAddress("0.0.0.0", port), 0
+        );
         server.createContext("/api/", app::api);
         server.createContext("/", app::staticFiles);
         server.setExecutor(Executors.newCachedThreadPool());
